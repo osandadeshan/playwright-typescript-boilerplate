@@ -2,7 +2,14 @@
   "name": "playwright-typescript-boilerplate",
   "version": "1.0.0",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "test": "playwright test",
+    "test:headed": "playwright test --headed",
+    "test:debug": "playwright test --debug",
+    "test:report": "playwright show-report",
+    "test:coverage": "playwright test --coverage",
+    "test:coverage:report": "playwright show-coverage"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
