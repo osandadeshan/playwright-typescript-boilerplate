@@ -8,6 +8,7 @@ test.describe("Login Feature", () => {
     const loginPage = new LoginPage(page);
     await loginPage.login("standard_user", "secret_sauce");
 
+    expect(await loginPage.getPageHeading()).toBe("Products");
     await expect(page).toHaveURL(/inventory.html/);
   });
 

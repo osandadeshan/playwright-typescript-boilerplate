@@ -9,6 +9,11 @@ export class LoginPage {
     await this.page.locator("#login-button").click();
   }
 
+  async getPageHeading(): Promise<string> {
+    const headingText = await this.page.locator("span.title").textContent();
+    return headingText?.trim() ?? "";
+  }
+
   async getErrorMessage(): Promise<string> {
     const errorText = await this.page
       .locator('[data-test="error"]')
