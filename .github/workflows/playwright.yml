@@ -34,9 +34,6 @@ jobs:
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
 
-      - name: Save build state
-        run: echo "Build complete"
-
   test:
     needs: build
     runs-on: ubuntu-latest
