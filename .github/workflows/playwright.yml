@@ -26,10 +26,6 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
 
-      - name: Set cache key output
-        id: set-cache-key
-        run: echo "cache-key=${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
-
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: npm ci
@@ -37,6 +33,10 @@ jobs:
       - name: Install Playwright Browsers
         if: steps.cache-deps.outputs.cache-hit != 'true'
         run: npx playwright install --with-deps
+
+      - name: Set cache key output
+        id: set-cache-key
+        run: echo "cache-key=${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
 
   test:
     needs: build
@@ -55,9 +55,6 @@ jobs:
             node_modules
             ~/.cache/ms-playwright
           key: ${{ needs.build.outputs.cache-key }}
-
-      - name: Install Playwright Browsers and dependencies
-        run: npx playwright install --with-deps
 
       - name: Run Playwright tests
         run: npm test
