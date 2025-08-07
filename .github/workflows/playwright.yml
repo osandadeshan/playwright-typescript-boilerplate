@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     outputs:
-      cache-key: ${{ steps.cache-deps.outputs.cache-primary-key }}
+      cache-key: ${{ steps.set-cache-key.outputs.cache-key }}
     steps:
       - uses: actions/checkout@v4
 
@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: lts/*
 
-      - name: Cache node_modules
+      - name: Cache node_modules and browsers
         id: cache-deps
         uses: actions/cache@v4
         with:
@@ -25,6 +25,10 @@ jobs:
             node_modules
             ~/.cache/ms-playwright
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+
+      - name: Set cache key output
+        id: set-cache-key
+        run: echo "cache-key=${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
         if: steps.cache-deps.outputs.cache-hit != 'true'
