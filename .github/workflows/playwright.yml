@@ -56,6 +56,9 @@ jobs:
             ~/.cache/ms-playwright
           key: ${{ needs.build.outputs.cache-key }}
 
+      - name: Install Playwright Browsers and dependencies
+        run: npx playwright install --with-deps
+        
       - name: Run Playwright tests
         run: npm test
 
