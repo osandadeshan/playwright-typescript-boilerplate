@@ -59,13 +59,33 @@ jobs:
         run: npm test
 
       - name: Generate Allure report
+        id: generate-allure
         if: always()
         run: |
           if [ -d allure-results ] && [ "$(ls -A allure-results)" ]; then
             npx allure generate allure-results -o allure-report
+            echo "report-created=true" >> $GITHUB_OUTPUT
           else
             echo "No allure-results found, skipping report generation"
+            echo "report-created=false" >> $GITHUB_OUTPUT
           fi
+
+      - name: Upload Allure report to GitHub Pages artifact
+        if: steps.generate-allure.outputs.report-created == 'true'
+        uses: actions/upload-pages-artifact@v1
+        with:
+          path: allure-report
+
+      - name: Deploy Allure report to GitHub Pages
+        if: steps.generate-allure.outputs.report-created == 'true'
+        uses: actions/deploy-pages@v1
+
+      - name: Add Allure report link to workflow summary
+        if: steps.generate-allure.outputs.report-created == 'true'
+        run: |
+          echo "### Allure Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- [Open Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Playwright report
         if: always()
