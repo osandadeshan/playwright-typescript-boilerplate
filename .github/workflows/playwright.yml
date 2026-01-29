@@ -5,6 +5,10 @@ on:
   pull_request:
     branches: [master]
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -75,13 +79,16 @@ jobs:
         run: |
           echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" > allure-report/ALLURE_REPORT_URL.txt
 
-      - name: Deploy Allure report to gh-pages
+      - name: Upload Allure report to Pages artifact
         if: steps.generate-allure.outputs.report-created == 'true'
-        uses: JamesIves/github-pages-deploy-action@v4
+        uses: actions/upload-pages-artifact@v4
         with:
-          branch: gh-pages
-          folder: allure-report
-          token: ${{ secrets.GITHUB_TOKEN }}
+          path: allure-report
+
+      - name: Deploy to GitHub Pages
+        if: steps.generate-allure.outputs.report-created == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4
 
       - name: Add Allure report links to workflow summary
         if: steps.generate-allure.outputs.report-created == 'true'
