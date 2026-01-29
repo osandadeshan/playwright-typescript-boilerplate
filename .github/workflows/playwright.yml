@@ -41,6 +41,9 @@ jobs:
   test:
     needs: build
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
 
@@ -90,13 +93,12 @@ jobs:
         id: deployment
         uses: actions/deploy-pages@v4
 
-      - name: Add Allure report links to workflow summary
+      - name: Add Allure report link to workflow summary
         if: steps.generate-allure.outputs.report-created == 'true'
         run: |
           echo "### Allure Report" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- [Open deployed report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
-          echo "- [Download Allure artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}/artifacts)" >> $GITHUB_STEP_SUMMARY
+          echo "📊 [View Allure Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/)" >> $GITHUB_STEP_SUMMARY
 
       - name: Upload Playwright report
         if: always()
