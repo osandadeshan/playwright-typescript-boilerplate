@@ -82,11 +82,17 @@ jobs:
         run: |
           echo "https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/" > allure-report/ALLURE_REPORT_URL.txt
 
+      - name: Prepare Pages artifact structure
+        if: steps.generate-allure.outputs.report-created == 'true'
+        run: |
+          mkdir -p public
+          cp -r allure-report/* public/
+
       - name: Upload Allure report to Pages artifact
         if: steps.generate-allure.outputs.report-created == 'true'
         uses: actions/upload-pages-artifact@v4
         with:
-          path: allure-report
+          path: public
 
       - name: Deploy to GitHub Pages
         if: steps.generate-allure.outputs.report-created == 'true'
