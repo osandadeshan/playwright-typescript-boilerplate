@@ -4,9 +4,9 @@ export class LoginPage {
   constructor(private readonly page: Page) {}
 
   async login(username: string, password: string): Promise<void> {
-    await this.page.locator("#user-name").fill(username);
-    await this.page.locator("#password").fill(password);
-    await this.page.locator("#login-button").click();
+    await this.page.fill("#user-name", username);
+    await this.page.fill("#password", password);
+    await this.page.click("#login-button");
   }
 
   async getPageHeading(): Promise<string> {
@@ -19,5 +19,6 @@ export class LoginPage {
       .locator('[data-test="error"]')
       .textContent();
     return errorText?.trim() ?? "";
+    ``;
   }
 }
